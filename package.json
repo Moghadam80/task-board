@@ -1,0 +1,17 @@
+{
+  "name": "task-board",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Persian RTL task board monorepo (Next.js + NestJS)",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev:frontend": "npm --prefix frontend run dev",
+    "dev:backend": "npm --prefix backend run start:dev",
+    "test": "npm --prefix backend test",
+    "lint": "npm --prefix frontend run lint && npm --prefix backend run lint",
+    "typecheck": "npm --prefix frontend run typecheck && npm --prefix backend run typecheck",
+    "build": "npm --prefix backend run build && npm --prefix frontend run build"
+  }
+}
