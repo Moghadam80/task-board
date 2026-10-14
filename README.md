@@ -4,7 +4,7 @@
 task-board/
 ├── frontend/           # Next.js App Router
 ├── backend/            # NestJS + TypeORM
-├── docs/               # Architecture, AI workflow, demo script
+├── docs/               # Architecture, AI workflow
 ├── docker-compose.yml  # PostgreSQL 16
 ├── AGENTS.md           # Agent instructions
 └── README.md

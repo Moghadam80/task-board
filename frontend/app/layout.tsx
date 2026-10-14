@@ -1,9 +1,8 @@
 import type { Metadata } from 'next';
-import { Vazirmatn } from 'next/font/google';
 import './globals.css';
 import { Providers } from './providers';
+import { iranyekan } from './models/fonts';
 
-const vazir = Vazirmatn({ variable: '--font-vazir', subsets: ['arabic', 'latin'] });
 
 export const metadata: Metadata = {
   title: 'کاربان | مدیریت وظایف تیم',
@@ -11,8 +10,9 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+
   return (
-    <html lang="fa" dir="rtl" className={vazir.variable}>
+    <html lang="fa" dir="rtl" className={iranyekan.className}>
       <body>
         <Providers>{children}</Providers>
       </body>
