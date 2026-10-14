@@ -23,6 +23,12 @@ import {
   type User,
 } from '@/lib/tasks';
 
+import DatePicker, { DateObject } from 'react-multi-date-picker';
+import persian from 'react-date-object/calendars/persian';
+import persian_fa from 'react-date-object/locales/persian_fa';
+import gregorian from 'react-date-object/calendars/gregorian';
+import gregorian_en from 'react-date-object/locales/gregorian_en';
+
 export function TaskDialog({
   open,
   onClose,
@@ -63,18 +69,18 @@ export function TaskDialog({
   const isMember = currentUser.role === 'member';
   const assigneeOptions = isMember
     ? [
-        { value: '', label: 'بدون مسئول' },
-        { value: currentUser.id, label: currentUser.name },
-        ...(task?.assignee && task.assignee.id !== currentUser.id
-          ? [{ value: task.assignee.id, label: task.assignee.name }]
-          : []),
-      ]
+      { value: '', label: 'بدون مسئول' },
+      { value: currentUser.id, label: currentUser.name },
+      ...(task?.assignee && task.assignee.id !== currentUser.id
+        ? [{ value: task.assignee.id, label: task.assignee.name }]
+        : []),
+    ]
     : [
-        { value: '', label: 'بدون مسئول' },
-        ...users
-          .filter((user) => user.isActive)
-          .map((user) => ({ value: user.id, label: user.name })),
-      ];
+      { value: '', label: 'بدون مسئول' },
+      ...users
+        .filter((user) => user.isActive)
+        .map((user) => ({ value: user.id, label: user.name })),
+    ];
 
   const submit = async (values: TaskInput) => {
     setServerError('');
@@ -104,21 +110,21 @@ export function TaskDialog({
     reset(
       task
         ? {
-            title: task.title,
-            status: task.status,
-            priority: task.priority,
-            assigneeId: task.assigneeId,
-            dueDate: task.dueDate,
-            description: task.description ?? emptyDescription,
-          }
+          title: task.title,
+          status: task.status,
+          priority: task.priority,
+          assigneeId: task.assigneeId,
+          dueDate: task.dueDate,
+          description: task.description ?? emptyDescription,
+        }
         : {
-            title: '',
-            status: 'todo',
-            priority: 'medium',
-            assigneeId: currentUser.id,
-            dueDate: null,
-            description: emptyDescription,
-          },
+          title: '',
+          status: 'todo',
+          priority: 'medium',
+          assigneeId: currentUser.id,
+          dueDate: null,
+          description: emptyDescription,
+        },
     );
   }, [currentUser.id, open, reset, task]);
 
@@ -150,9 +156,6 @@ export function TaskDialog({
                   <DialogTitle className="text-xl font-black text-slate-900">
                     {task ? 'ویرایش وظیفه' : 'ایجاد وظیفه جدید'}
                   </DialogTitle>
-                  <p className="mt-1 text-sm text-slate-500">
-                    توضیحات به‌صورت سند JSON تیپ‌تپ ذخیره می‌شود، نه HTML.
-                  </p>
                 </div>
                 <button
                   type="button"
@@ -239,16 +242,53 @@ export function TaskDialog({
                       <p className="mt-1 text-xs text-rose-600">{errors.assigneeId.message}</p>
                     )}
                   </div>
+
                   <div>
-                    <label htmlFor="task-due-date" className="mb-2 block text-sm font-semibold">
+                    <label
+                      htmlFor="task-due-date"
+                      className="mb-2 block text-sm font-semibold"
+                    >
                       مهلت انجام
                     </label>
-                    <Input
-                      id="task-due-date"
-                      type="date"
-                      {...register('dueDate', { setValueAs: (value) => value || null })}
+
+                    <Controller
+                      control={control}
+                      name="dueDate"
+                      render={({ field }) => (
+                        <DatePicker
+                          id="task-due-date"
+                          value={
+                            field.value
+                              ? new DateObject({
+                                date: field.value.slice(0, 10),
+                                calendar: gregorian,
+                                locale: gregorian_en,
+                              }).convert(persian, persian_fa)
+                              : null
+                          }
+                          onChange={(date) => {
+                            field.onChange(
+                              date
+                                ? date
+                                  .convert(gregorian, gregorian_en)
+                                  .format('YYYY-MM-DD')
+                                : null,
+                            );
+                          }}
+                          calendar={persian}
+                          locale={persian_fa}
+                          format="YYYY/MM/DD"
+                          calendarPosition="bottom-right"
+                          inputClass="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
+                          containerClassName="w-full"
+                          placeholder="انتخاب تاریخ"
+                          editable={false}
+                          hideOnScroll
+                        />
+                      )}
                     />
                   </div>
+
                 </div>
                 <div>
                   <label className="mb-2 block text-sm font-semibold">توضیحات</label>
